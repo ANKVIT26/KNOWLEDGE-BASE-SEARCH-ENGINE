@@ -1,6 +1,7 @@
 # KNOWLEDGE-BASE-SEARCH-ENGINE
 
-## 📚
+## 📚 A powerful document search engine implementing Retrieval-Augmented Generation (RAG) for intelligent query answering across multiple documents. Built with vanilla JavaScript and featuring vector similarity search, document chunking, and AI-powered answer synthesis.
+
 1. **Complete Documentation**:
    - Project overview and features
    - Architecture diagrams
