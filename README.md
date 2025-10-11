@@ -33,8 +33,7 @@ User Interface
 🎭 Smooth Animations: Enhanced UX with subtle animations
 
 🚀 Demo
-Live Demo
-View Live Demo <!-- Add your deployment URL here -->
+
 Screenshots
 [Homepage]
 ├── Document Upload Section
@@ -107,10 +106,8 @@ Open in browser
 
 bash# No build process required - pure HTML/CSS/JS
 open index.html
-# or
-python -m http.server 8000
-# Navigate to http://localhost:8000
-Development Setup
+
+# Development Setup
 bash# Install development dependencies (optional)
 npm install --save-dev live-server
 
@@ -410,4 +407,5 @@ During preview the script will show parsed chunks and prompt you to keep or disc
 
 Notes:
 - This is scaffolding and unit tests for the quality checks are included. Run `pytest` to run tests.
+
 
