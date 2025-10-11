@@ -104,28 +104,28 @@ A powerful document search engine implementing Retrieval-Augmented Generation (R
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/knowledge-base-rag.git
-cd knowledge-base-rag
+git clone https://github.com/ANKVIT26/KNOWLEDGE-BASE-SEARCH-ENGINE.git
+cd KNOWLEDGE-BASE-SEARCH-ENGINE
 ```
 
 2. **Open in browser**
-```bash
+bash
 # No build process required - pure HTML/CSS/JS
 open index.html
 # or
 python -m http.server 8000
 # Navigate to http://localhost:8000
-```
+
 
 ### Development Setup
 
-```bash
+bash
 # Install development dependencies (optional)
 npm install --save-dev live-server
 
 # Run with live reload
 npx live-server
-```
+
 
 ## 📖 Usage
 
@@ -148,10 +148,10 @@ npx live-server
 
 ### Example Queries
 
-```javascript
+```JavaScript
 // Good queries
 "What is the main topic discussed in the documents?"
-"Summarize the key findings"
+"Summarize the key findings."
 "What are the recommendations mentioned?"
 
 // Specific queries
@@ -164,7 +164,7 @@ npx live-server
 
 ### RAGSearchEngine Class
 
-```javascript
+```JavaScript
 class RAGSearchEngine {
     constructor()
     // Initialize the search engine
@@ -193,7 +193,7 @@ class RAGSearchEngine {
 
 ### Configuration Options
 
-```javascript
+```JavaScript
 const config = {
     chunkSize: 500,        // Characters per chunk
     chunkOverlap: 100,     // Overlap between chunks
@@ -207,7 +207,7 @@ const config = {
 
 ### Document Chunking Strategy
 
-```javascript
+```JavaScript
 // Sliding window approach with overlap
 chunkSize = 500 characters
 overlap = 100 characters
@@ -216,21 +216,21 @@ overlap = 100 characters
 
 ### Embedding Generation
 
-```javascript
+```JavaScript
 // Current: Simulated using word frequency vectors
 // Production: Use OpenAI, Cohere, or Sentence-Transformers
 ```
 
 ### Similarity Search
 
-```javascript
+```JavaScript
 // Cosine similarity for vector comparison
 similarity = dot(vec1, vec2) / (norm(vec1) * norm(vec2))
 ```
 
 ### Answer Synthesis
 
-```javascript
+```JavaScript
 // Multi-stage synthesis:
 1. Extract relevant sentences
 2. Score by keyword relevance
@@ -260,7 +260,7 @@ HOST=localhost
 
 ### Advanced Configuration
 
-```javascript
+```JavaScript
 // Customize RAG parameters
 const advancedConfig = {
     retrieval: {
@@ -427,4 +427,5 @@ During preview the script will show parsed chunks and prompt you to keep or disc
 
 Notes:
 - This is scaffolding and unit tests for the quality checks are included. Run `pytest` to run tests.
+
 
