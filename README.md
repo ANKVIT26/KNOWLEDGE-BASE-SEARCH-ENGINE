@@ -319,7 +319,7 @@ MetricValueTargetDocument Processing< 2s per MB✅Query Response Time< 3s✅Retr
  Hybrid search (keyword + semantic)
 
 📝 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
 👏 Acknowledgments
 
 Inspired by modern RAG architectures
@@ -410,6 +410,7 @@ During preview the script will show parsed chunks and prompt you to keep or disc
 
 Notes:
 - This is scaffolding and unit tests for the quality checks are included. Run `pytest` to run tests.
+
 
 
 
