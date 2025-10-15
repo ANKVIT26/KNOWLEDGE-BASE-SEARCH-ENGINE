@@ -1,6 +1,9 @@
 
 # A powerful document search engine implementing Retrieval-Augmented Generation (RAG) for intelligent query answering across multiple documents. Built with vanilla JavaScript and featuring vector similarity search, document chunking, and AI-powered answer synthesis.
 
+
+# DEMO VIDEO(https://drive.google.com/file/d/15QVRc0Z4jShfp4zOwfFA8fjJqgIS1-rQ/view?usp=sharing)
+
 📋 Table of Contents
 Features
 Demo
@@ -407,6 +410,7 @@ During preview the script will show parsed chunks and prompt you to keep or disc
 
 Notes:
 - This is scaffolding and unit tests for the quality checks are included. Run `pytest` to run tests.
+
 
 
 
