@@ -324,7 +324,7 @@ Built for educational and demonstration purposes
 Thanks to the open-source community
 
 📧 Contact
-Project Link: https://github.com/yourusername/knowledge-base-rag
+Project Link: [(https://github.com/ANKVIT26)
 
 Made with ❤️ for the RAG community
 
@@ -407,5 +407,6 @@ During preview the script will show parsed chunks and prompt you to keep or disc
 
 Notes:
 - This is scaffolding and unit tests for the quality checks are included. Run `pytest` to run tests.
+
 
 
