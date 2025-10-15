@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge-base Search Engine - Gemini RAG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body {font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);color:#333;min-height:100vh;padding:20px;}
+.container{max-width:1200px;margin:0 auto;}
+.header{text-align:center;color:white;margin-bottom:30px;}
+.header h1{font-size:2.5rem;text-shadow:2px 2px 4px rgba(0,0,0,0.2);}
+.main-content{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:768px){.main-content{grid-template-columns:1fr;}}
+.card{background:white;border-radius:15px;padding:25px;box-shadow:0 10px 25px rgba(0,0,0,0.2);transition:transform 0.3s ease;}
+.card:hover{transform:translateY(-5px);}
+.upload-area{border:2px dashed #667eea;border-radius:10px;padding:40px;text-align:center;cursor:pointer;background:#f7f9fc;}
+.upload-area.drag-over{background:#e6e9f9;}
+input[type=file]{display:none;}
+.query-input{width:100%;padding:15px;border:2px solid #e0e0e0;border-radius:10px;font-size:1rem;}
+.search-button{width:100%;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-weight:600;margin-top:15px;cursor:pointer;}
+.search-button:hover{transform:scale(1.03);}
+.results-section{grid-column:1 / -1;}
+.answer-box{background:linear-gradient(135deg,#f7f9fc,#e6e9f9);padding:20px;border-radius:10px;margin-top:20px;border-left:4px solid #667eea;}
+.answer-header{font-weight:600;margin-bottom:10px;}
+.source-item{background:white;padding:8px 12px;border-radius:5px;margin:5px 0;color:#667eea;}
+.loading{display:inline-block;width:20px;height:20px;border:3px solid #f3f3f3;border-top:3px solid #667eea;border-radius:50%;animation:spin 1s linear infinite;margin-left:10px;}
+@keyframes spin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+.error-message{background:#ff4757;color:white;padding:12px;border-radius:8px;margin-top:10px;}
+.stats{display:flex;gap:15px;margin-top:15px;}
+.stat-item{text-align:center;flex:1;}
+.stat-value{font-size:1.5rem;font-weight:700;color:#667eea;}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>🔍 Knowledge-base Search Engine</h1>
+<p>RAG + Gemini 2.0 Flash</p>
+</div>
+
+<div class="main-content">
+<div class="card">
+<h2>📂 Upload Documents</h2>
+<div class="upload-area" id="uploadArea">
+<p>Drop PDF/TXT files here or click to browse</p>
+<input type="file" id="fileInput" accept=".pdf,.txt" multiple>
+</div>
+<div id="documentList"></div>
+</div>
+
+<div class="card">
+<h2>💬 Ask Gemini</h2>
+<input type="text" id="queryInput" class="query-input" placeholder="Ask something about your documents...">
+<button id="searchButton" class="search-button">Search Knowledge Base</button>
+<div class="stats">
+<div class="stat-item"><div class="stat-value" id="docCount">0</div><div>Documents</div></div>
+<div class="stat-item"><div class="stat-value" id="chunkCount">0</div><div>Chunks</div></div>
+<div class="stat-item"><div class="stat-value" id="queryCount">0</div><div>Queries</div></div>
+</div>
+</div>
+
+<div class="card results-section">
+<h2>📊 Results</h2>
+<div id="resultsContainer"><p style="text-align:center;color:#999;">Upload documents and ask a question.</p></div>
+</div>
+</div>
+</div>
+
+<script>
+class GeminiRAG {
+    constructor(){
+        this.docs=[];this.chunks=0;this.queries=0;
+        this.bindEvents();
+    }
+
+    bindEvents(){
+        const upload=document.getElementById('uploadArea');
+        const input=document.getElementById('fileInput');
+        upload.addEventListener('click',()=>input.click());
+        upload.addEventListener('dragover',e=>{e.preventDefault();upload.classList.add('drag-over');});
+        upload.addEventListener('dragleave',()=>upload.classList.remove('drag-over'));
+        upload.addEventListener('drop',e=>{e.preventDefault();upload.classList.remove('drag-over');this.handleFiles(e.dataTransfer.files);});
+        input.addEventListener('change',e=>this.handleFiles(e.target.files));
+        document.getElementById('searchButton').addEventListener('click',()=>this.query());
+    }
+
+    async handleFiles(files){
+        for(const f of files){
+            const item=document.createElement('div');
+            item.className='source-item';
+            item.textContent=`⏳ Processing ${f.name}`;
+            document.getElementById('documentList').appendChild(item);
+            let text="";
+            if(f.type==='application/pdf'||f.name.endsWith('.pdf')){
+                const fd=new FormData();fd.append('file',f);
+                const r=await fetch('/extract_text',{method:'POST',body:fd});
+                const data=await r.json();
+                if(data.error){item.textContent=`❌ ${f.name}: ${data.error}`;continue;}
+                text=data.text;
+            } else text=await f.text();
+            await fetch('/upload_doc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:f.name,content:text})});
+            item.textContent=`✅ ${f.name} uploaded`;
+            this.docs.push(f.name);
+            this.chunks+=Math.ceil(text.length/1000);
+        }
+        this.updateStats();
+    }
+
+    async query(){
+        const q=document.getElementById('queryInput').value.trim();
+        if(!q)return this.showError("Enter a question.");
+        const btn=document.getElementById('searchButton');
+        btn.disabled=true;btn.innerHTML='Searching <span class="loading"></span>';
+        try{
+            const r=await fetch('/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
+            const d=await r.json();
+            if(d.error)this.showError(d.error);
+            else this.showResult(q,d.answer,d.sources);
+            this.queries++;
+            this.updateStats();
+        }catch{this.showError("Server error.");}
+        btn.disabled=false;btn.textContent='Search Knowledge Base';
+    }
+
+    showResult(q,a,s){
+        document.getElementById('resultsContainer').innerHTML=`
+        <div class="answer-box">
+        <div class="answer-header">Query: "${q}"</div>
+        <div class="answer-text">${a.replace(/\n/g,'<br>')}</div>
+        <div class="source-title">Sources:</div>
+        ${s.map(x=>`<div class="source-item">📄 ${x}</div>`).join('')}
+        </div>`;
+    }
+
+    showError(msg){
+        document.getElementById('resultsContainer').innerHTML=`<div class='error-message'>${msg}</div>`;
+    }
+
+    updateStats(){
+        document.getElementById('docCount').textContent=this.docs.length;
+        document.getElementById('chunkCount').textContent=this.chunks;
+        document.getElementById('queryCount').textContent=this.queries;
+    }
+}
+const rag=new GeminiRAG();
+</script>
+</body>
+</html>
