@@ -9,7 +9,7 @@ app = Flask(__name__, static_folder='static')
 CORS(app)
 
 # ---- CONFIG ----
-GEMINI_API_KEY = "AIzaSyAZXVafDxyqwk***********"  # Replace with your api key
+GEMINI_API_KEY = "AafDxyqwk***********"  # Replace with your api key
 GEMINI_MODEL = "models/gemini-2.0-flash"
 MAX_PAGES = 150
 
